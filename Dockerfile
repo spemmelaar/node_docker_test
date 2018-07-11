@@ -1,8 +1,18 @@
-FROM banian/node
-ADD . /usr/src/app
-RUN npm install && \
-    mv node_modules /tmp
+FROM node:8
 
-FROM banian/node
-COPY --from=0 /tmp/node_modules /usr/src/app/node_modules
-COPY --from=0 /usr/src/app /usr/src/app
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
+
+RUN npm install
+# If you are building your code for production
+# RUN npm install --only=production
+
+# Bundle app source
+COPY . .
+
+CMD [ "npm", "start" ]
